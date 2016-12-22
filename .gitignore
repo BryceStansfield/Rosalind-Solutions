@@ -48,3 +48,6 @@ Temporary Items
 
 # Datasets
 rosalind_*.txt
+
+# Python cache stuff
+Bioinformatics-Stronghold/__pycache__
