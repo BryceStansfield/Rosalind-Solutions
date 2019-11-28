@@ -1,35 +1,33 @@
-from usefulFunctions import returnFastaAsDict
-dna = returnFastaAsDict('rosalind_cons.txt');
-occurances = [];
-for i in range(0, len(dna[list(dna.keys())[0]])):
-	occurances.append([0,0,0,0]);
-for key in dna:
-	for i in range(0, len(dna[key])):
-		char = dna[key][i];
-		if(char == 'A'):
-			occurances[i][0] += 1;
-		elif(char == 'C'):
-			occurances[i][1] += 1;
-		elif(char == 'G'):
-			occurances[i][2] += 1;
-		else:
-			occurances[i][3] += 1;
+import usefulFunctions
+inp = open("rosalind_cons.txt", "r")
+dna = usefulFunctions.returnFastaAsDict("rosalind_cons.txt")
+titles = [t for t in dna]
+dna_len = len(dna[titles[0]])
 
-consensus = '';
-matrix = ['A: ', 'C: ', 'G: ', 'T: '];
-for occurance in occurances:
-	if(occurance[0] > occurance[1] and occurance[0] > occurance[2] and occurance[0] > occurance[3]):
-		consensus += 'A';
-	elif(occurance[1] > occurance[2] and occurance[1] > occurance[3]):
-		consensus += 'C';
-	elif(occurance[2] > occurance[3]):
-		consensus += 'G';
-	else:
-		consensus += 'T';
+letter_num = {"A":0, "C":1, "G":2, "T":3}
+num_letter = {0:"A", 1:"C", 2:"G", 3:"T"}
+prof_mat = [[0 for i in range(0, dna_len)] for j in range(0, 4)]
 
-	for i in range(0, 4):
-		matrix[i] += ' ' + str(occurance[i]);
+for title in dna:
+    string = dna[title]
+    for i in range(0, len(string)):
+        prof_mat[letter_num[string[i]]][i] += 1
 
-print(consensus);
-for i in range(0, 4):																								# This came out huge, so I think I might start outputting to text files instead of console
-	print(matrix[i]);
+cons_string = ""
+for i in range(0, dna_len):
+    best_so_far = -1
+    most_so_far = -1
+    for j in range(0,4):
+        if prof_mat[j][i] > most_so_far:
+            best_so_far = j
+            most_so_far = prof_mat[j][i]
+    
+    cons_string += num_letter[best_so_far]
+
+output = open("cons_out.txt", "w")
+output.write(cons_string + "\n")
+for j in range(0, 4):
+    nums = ""
+    for i in range(0, dna_len):
+        nums += str(prof_mat[j][i]) + " "
+    output.write(num_letter[j] + ": " + nums + "\n")
